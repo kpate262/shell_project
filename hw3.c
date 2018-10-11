@@ -3,13 +3,33 @@
 #include <unistd.h>
 #include "string.h"
 
+/*void forktwo(char **args1, char **args2){
+  int pid = fork();
+  if(pid == 0){
+    pid = fork();
+    if(pid == 0){
+      execv(args1[0], args1);
+    }
+    else{
+      //execv(args1[0], args1);
+      int status2;
+      wait(&status2);
+      execv(args2[0], args2);
+
+    }
+  }else{
+    int status;
+    wait(&status);
+  }
+}
+*/
 
 void forking(char **args1){
     int pid = fork();
 
     if(pid == 0){
       execv(args1[0], args1);
-      exit(0);
+
     }else{
       int status;
       wait(&status);
@@ -29,7 +49,7 @@ int main()
   fgets(line, 500, stdin);
   char *commands = strtok(line, " \n");
 
-  int i; int com = 0; int fcommandEnd;
+  int i; int com = 0;
 
  /* while(1){
     printf("%s", prompt);*/
@@ -39,8 +59,9 @@ int main()
           com = 1;
           args1[i] = (char*)0;
           forking(args1);
-          printf("here");
+        //  printf("2 here");
           i = 0;
+          commands = strtok(NULL, " \n");
         }
       if(com == 0){
         args1[i] = (char*)malloc(sizeof(char)*100);
@@ -48,7 +69,7 @@ int main()
         i++;
 
         if(strncmp(args1[0], "exit",4) == 0){
-     	 //  printf("im here");
+     	   printf("im done");
      	   exit(0);
       	}
       }
@@ -59,7 +80,7 @@ int main()
         i++;
 
         if(strncmp(args2[0], "exit",4) == 0){
-         //  printf("im here");
+           printf("im done");
            exit(0);
         }
       }
@@ -67,11 +88,13 @@ int main()
     }
       if(com == 0){
           args1[i] = (char*)0;
-	  forking(args1);
+          //printf("not\n" );
+	        forking(args1);
       }
       else{
-	  args2[i] = (char*)0;
-	  forking(args2);
+      	  args2[i] = (char*)0;
+          //printf(">>%d", i);
+      	  forking(args2);
       }
     /*line = malloc(sizeof(char)*500);
     fgets(line, 500, stdin);
