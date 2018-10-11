@@ -6,7 +6,7 @@
 
 void forking(char **args1){
     int pid = fork();
-    
+
     if(pid == 0){
       execv(args1[0], args1);
       exit(0);
@@ -34,13 +34,13 @@ int main()
  /* while(1){
     printf("%s", prompt);*/
     i = 0;
-    while(commands){ 
+    while(commands){
       if(strcmp(commands, ";") == 0){
-            com = 1;
-            args1[i] = (char*)0;
-            forking(args1);
-	    printf("here");
-            i = 0;
+          com = 1;
+          args1[i] = (char*)0;
+          forking(args1);
+          printf("here");
+          i = 0;
         }
       if(com == 0){
         args1[i] = (char*)malloc(sizeof(char)*100);
@@ -50,10 +50,10 @@ int main()
         if(strncmp(args1[0], "exit",4) == 0){
      	 //  printf("im here");
      	   exit(0);
-      	} 
+      	}
       }
       else{
-	
+
       	args2[i] = (char*)malloc(sizeof(char)*100);
         strcpy(args2[i], commands);
         i++;
@@ -61,7 +61,7 @@ int main()
         if(strncmp(args2[0], "exit",4) == 0){
          //  printf("im here");
            exit(0);
-        }	
+        }
       }
       commands = strtok(NULL, " \n");
     }
@@ -72,7 +72,7 @@ int main()
       else{
 	  args2[i] = (char*)0;
 	  forking(args2);
-      }   
+      }
     /*line = malloc(sizeof(char)*500);
     fgets(line, 500, stdin);
     commands = strtok(line, " \n");
