@@ -51,8 +51,8 @@ int main()
 
   int i; int com = 0;
 
- /* while(1){
-    printf("%s", prompt);*/
+  while(1){
+    printf("%s", prompt);
     i = 0;
     while(commands){
       if(strcmp(commands, ";") == 0){
@@ -67,38 +67,39 @@ int main()
         args1[i] = (char*)malloc(sizeof(char)*100);
         strcpy(args1[i], commands);
         i++;
-
-        if(strncmp(args1[0], "exit",4) == 0){
-     	   printf("im done");
-     	   exit(0);
-      	}
       }
       else{
 
       	args2[i] = (char*)malloc(sizeof(char)*100);
         strcpy(args2[i], commands);
         i++;
-
-        if(strncmp(args2[0], "exit",4) == 0){
-           printf("im done");
-           exit(0);
-        }
       }
       commands = strtok(NULL, " \n");
     }
       if(com == 0){
+        if(strncmp(args1[0], "exit",4) == 0){
+         printf("im done");
+         exit(-1);
+        }
           args1[i] = (char*)0;
           //printf("not\n" );
 	        forking(args1);
       }
       else{
+        if(strncmp(args2[0], "exit",4) == 0){
+           printf("im done");
+           exit(-1);
+        }
       	  args2[i] = (char*)0;
           //printf(">>%d", i);
       	  forking(args2);
       }
-    /*line = malloc(sizeof(char)*500);
+
+    free(line);
+    line = malloc(sizeof(char)*500);
     fgets(line, 500, stdin);
     commands = strtok(line, " \n");
-    }*/
+    com = 0;
+    }
 
 }
