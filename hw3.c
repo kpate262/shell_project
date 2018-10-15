@@ -4,6 +4,9 @@
 #include "string.h"
 #include "signal.h"
 #include "wait.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 /*void forktwo(char **args1, char **args2){
   int pid = fork();
@@ -27,14 +30,37 @@
 */
 
 void siginthandler() {
-   printf("\ncaught sigint\n");
+   write(2, "\ncaught sigint\nCS361 >", 22);
    return;
 }
 
 void sigstphandler() {
-   printf("\ncaught sigstp\n");
+   write(2, "\ncaught sigstp\nCS361 >", 22);
    return;
 }
+
+
+void outputtofile(char **args1, int toOutput){
+  int pid = fork();
+
+  if(pid == 0){
+    dup2(toOutput, 1);
+    execv(args1[0], args1);
+    exit(0);
+
+  }else{
+    int status;
+    wait(&status);
+
+    if(status == 256){
+      status = 1;
+    }
+    printf("pid:%d status:%d\n", pid, status);
+  }
+}
+
+
+
 
 void forking(char **args1){
     int pid = fork();
@@ -83,6 +109,15 @@ int main()
           i = 0;
           commands = strtok(NULL, " \n");
         }
+
+      if(strcmp(commands, ">") == 0){
+        int toOutput = open(commands = strtok(NULL, " \n"), O_RDWR | O_CREAT | S_IRWXO);
+        args1[i] = (char *)0;
+        com = 3;
+        dup2(toOutput, 1);
+        forking(args1);
+      }
+
       if(com == 0){
         args1[i] = (char*)malloc(sizeof(char)*100);
         strcpy(args1[i], commands);
@@ -105,7 +140,7 @@ int main()
         forking(args1);
         printf("%s", prompt);
       }
-      else{
+      else if(com == 1){
         if(strncmp(args2[0], "exit",4) == 0){
            printf("im done");
            exit(-1);
