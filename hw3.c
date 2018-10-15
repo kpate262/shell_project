@@ -33,6 +33,7 @@ void forking(char **args1){
     }else{
       int status;
       wait(&status);
+      printf("pid:%d status:%d\n", pid, status);
     }
 }
 
@@ -52,7 +53,6 @@ int main()
   int i; int com = 0;
 
   while(1){
-    printf("%s", prompt);
     i = 0;
     while(commands){
       if(strcmp(commands, ";") == 0){
@@ -84,6 +84,7 @@ int main()
           args1[i] = (char*)0;
           //printf("not\n" );
 	        forking(args1);
+          printf("%s", prompt);
       }
       else{
         if(strncmp(args2[0], "exit",4) == 0){
@@ -93,6 +94,7 @@ int main()
       	  args2[i] = (char*)0;
           //printf(">>%d", i);
       	  forking(args2);
+          printf("%s", prompt);
       }
 
     free(line);
