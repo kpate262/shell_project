@@ -1,0 +1,5 @@
+/bin/ls -l ; /bin/pwd
+/bin/ls
+
+/bin/ls
+/bin/pwd

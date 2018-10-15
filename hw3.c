@@ -2,6 +2,8 @@
 #include "stdio.h"
 #include <unistd.h>
 #include "string.h"
+#include "signal.h"
+#include "wait.h"
 
 /*void forktwo(char **args1, char **args2){
   int pid = fork();
@@ -24,11 +26,22 @@
 }
 */
 
+void siginthandler() {
+   printf("\ncaught sigint\n");
+   return;
+}
+
+void sigstphandler() {
+   printf("\ncaught sigstp\n");
+   return;
+}
+
 void forking(char **args1){
     int pid = fork();
 
     if(pid == 0){
       execv(args1[0], args1);
+      exit(0);
 
     }else{
       int status;
@@ -44,7 +57,9 @@ int main()
   char **args1 = (char**)malloc(sizeof(char*)*20);
   char **args2 = (char**)malloc(sizeof(char*)*20);
   char prompt[] = "CS361 >";
-
+  signal(SIGINT, siginthandler);//used https://www.tutorialspoint.com/c_standard_library/c_function_signal.htm
+                             // as reference
+  signal(SIGTSTP, sigstphandler);
   printf("%s", prompt);
   line = (char*)malloc(sizeof(char)*500);
   fgets(line, 500, stdin);
@@ -54,12 +69,13 @@ int main()
 
   while(1){
     i = 0;
+    //signal(SIGINT, siginthandler);
+    //signal(SIGTSTP, sigstphandler);
     while(commands){
       if(strcmp(commands, ";") == 0){
           com = 1;
           args1[i] = (char*)0;
           forking(args1);
-        //  printf("2 here");
           i = 0;
           commands = strtok(NULL, " \n");
         }
@@ -81,20 +97,19 @@ int main()
          printf("im done");
          exit(-1);
         }
-          args1[i] = (char*)0;
-          //printf("not\n" );
-	        forking(args1);
-          printf("%s", prompt);
+        args1[i] = (char*)0;
+        forking(args1);
+        printf("%s", prompt);
       }
       else{
         if(strncmp(args2[0], "exit",4) == 0){
            printf("im done");
            exit(-1);
         }
-      	  args2[i] = (char*)0;
-          //printf(">>%d", i);
-      	  forking(args2);
-          printf("%s", prompt);
+    	  args2[i] = (char*)0;
+        //printf(">>%d", i);
+    	  forking(args2);
+        printf("%s", prompt);
       }
 
     free(line);
