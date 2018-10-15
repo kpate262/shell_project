@@ -46,6 +46,10 @@ void forking(char **args1){
     }else{
       int status;
       wait(&status);
+
+      if(status == 256){
+        status = 1;
+      }
       printf("pid:%d status:%d\n", pid, status);
     }
 }
