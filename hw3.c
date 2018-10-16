@@ -40,6 +40,26 @@ void sigstphandler() {
 }
 
 
+void inputtofile(char **args1, int toInput){
+  int pid = fork();
+
+  if(pid == 0){
+    dup2(toInput, 0);
+    execv(args1[0], args1);
+    exit(0);
+
+  }else{
+    int status;
+    wait(&status);
+
+    if(status == 256){
+      status = 1;
+    }
+    printf("pid:%d status:%d\n", pid, status);
+  }
+}
+
+
 void outputtofile(char **args1, int toOutput){
   int pid = fork();
 
@@ -146,6 +166,18 @@ int main()
         com = 3;
         //dup2(toOutput, 1);
         outputtofile(args1, toOutput);
+        printf("%s", prompt);
+        //dup2(1, 1);
+        i = 0;
+      }
+
+      if(strcmp(commands, "<") == 0){
+        commands = strtok(NULL, " \n");
+        int toInput = open(commands, O_RDONLY, S_IRWXO);
+        args1[i] = (char *)0;
+        com = 3;
+        //dup2(toOutput, 1);
+        inputtofile(args1, toInput);
         printf("%s", prompt);
         //dup2(1, 1);
         i = 0;
