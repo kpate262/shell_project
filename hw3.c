@@ -60,6 +60,37 @@ void outputtofile(char **args1, int toOutput){
 }
 
 
+void forking2(char **args1, char **args2){
+    int pid = fork();
+
+    if(pid == 0){
+      execv(args1[0], args1);
+      exit(0);
+
+    }else{
+      int pid2 = fork();
+      if(pid2 == 0){
+        execv(args2[0], args2);
+      }
+      else{
+        int stat;
+        wait(&stat);
+        if(stat == 256){
+          stat = 1;
+        }
+
+        int status;
+        wait(&status);
+
+        if(status == 256){
+          status = 1;
+        }
+        printf("pid:%d status:%d\n", pid, status);
+        printf("pid:%d status:%d\n", pid2, stat);
+      }
+
+    }
+}
 
 
 void forking(char **args1){
@@ -68,7 +99,6 @@ void forking(char **args1){
     if(pid == 0){
       execv(args1[0], args1);
       exit(0);
-
     }else{
       int status;
       wait(&status);
@@ -105,17 +135,20 @@ int main()
       if(strcmp(commands, ";") == 0){
           com = 1;
           args1[i] = (char*)0;
-          forking(args1);
           i = 0;
           commands = strtok(NULL, " \n");
         }
 
       if(strcmp(commands, ">") == 0){
-        int toOutput = open(commands = strtok(NULL, " \n"), O_RDWR | O_CREAT | S_IRWXO);
+        commands = strtok(NULL, " \n");
+        int toOutput = open(commands, O_WRONLY | O_CREAT | O_TRUNC, S_IRWXO);
         args1[i] = (char *)0;
         com = 3;
-        dup2(toOutput, 1);
-        forking(args1);
+        //dup2(toOutput, 1);
+        outputtofile(args1, toOutput);
+        printf("%s", prompt);
+        //dup2(1, 1);
+        i = 0;
       }
 
       if(com == 0){
@@ -143,11 +176,12 @@ int main()
       else if(com == 1){
         if(strncmp(args2[0], "exit",4) == 0){
            printf("im done");
+           forking(args1);
            exit(-1);
         }
     	  args2[i] = (char*)0;
         //printf(">>%d", i);
-    	  forking(args2);
+        forking2(args1, args2);
         printf("%s", prompt);
       }
 
