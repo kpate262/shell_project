@@ -8,26 +8,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-/*void forktwo(char **args1, char **args2){
-  int pid = fork();
-  if(pid == 0){
-    pid = fork();
-    if(pid == 0){
-      execv(args1[0], args1);
-    }
-    else{
-      //execv(args1[0], args1);
-      int status2;
-      wait(&status2);
-      execv(args2[0], args2);
-
-    }
-  }else{
-    int status;
-    wait(&status);
-  }
-}
-*/
 
 void siginthandler() {
    write(2, "\ncaught sigint\nCS361 >", 22);
@@ -188,7 +168,7 @@ int main()
         strcpy(args1[i], commands);
         i++;
       }
-      else{
+      else if(com == 1){
 
       	args2[i] = (char*)malloc(sizeof(char)*100);
         strcpy(args2[i], commands);
